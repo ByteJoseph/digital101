@@ -14,6 +14,7 @@ st.write(
     """,unsafe_allow_html=True
 )
 st.markdown("[**View my dataset**](https://github.com/ByteJoseph/digital101/tree/master/dataset)")
+st.balloons()
 if st.button("Revise Topics",icon=":material/menu_book:",):
     st.switch_page("./pages/2_learn.py")
     pass
