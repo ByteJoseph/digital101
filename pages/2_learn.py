@@ -31,7 +31,7 @@ topics = [
     "AI and Metaverse",
     "Impact of Artificial Intelligence on Workforce and Workplace",
     "Future of Artificial Intelligence in Various Industries",
-    "Edge AI / TinyML",
+    "Edge AI OR TinyML",
     "Quantum Computing",
     "AI Ethics",
     "Ethical Considerations of Generative AI",
