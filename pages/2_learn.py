@@ -72,7 +72,7 @@ topics = [
 ]
 selected_topic = st.selectbox(":rainbow[Choose a topic to begin:]", topics)
 
-filename = selected_topic.replace("✅", "").strip().replace(" ", " ") + ".csv"
+filename = selected_topic.replace("✅", "").strip().replace(" ", " ").rstrip() + ".csv"
 path = f"./dataset/{filename}"
 
 
