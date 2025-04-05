@@ -1,8 +1,9 @@
 import streamlit as st
 import pandas as pd
 import os
-
+from streamlit_js_eval import streamlit_js_eval
 import google.generativeai as genai
+import requests
 genai.configure(api_key=st.secrets["api"]["gemini_key"])
 model = genai.GenerativeModel('gemini-1.5-flash')
 
@@ -12,7 +13,7 @@ Welcome to my learning hub! Here you'll find curated content to strengthen your 
 """)
 
 load_bar = st.progress(0)
-st.caption("% of generation")
+st.caption("% of LLM performance")
 st.subheader("📚 Topics")
 topics = [
     "An Overview of Artificial Intelligence",
@@ -69,7 +70,7 @@ topics = [
     "Applications of AR & VR in Banking & Insurance",
     "VR Best Practices and Challenges"
 ]
-selected_topic = st.selectbox("Choose a topic to begin:", topics)
+selected_topic = st.selectbox(":rainbow[Choose a topic to begin:]", topics)
 
 filename = selected_topic.replace("✅", "").strip().replace(" ", " ") + ".csv"
 path = f"./dataset/{filename}"
@@ -88,15 +89,21 @@ try:
 except Exception as e:
     st.error(f"Failed to load content: {e}")
 st.markdown("#### 🗒️ Lesson Topics Summary")
-
+def is_image(url):
+    try:
+        response = requests.head(url, allow_redirects=True, timeout=3)
+        content_type = response.headers.get("Content-Type", "")
+        return content_type.startswith("image/")
+    except:
+        return False
 for i, row in enumerate(df.itertuples(), start=1):
-    st.markdown(f"**{i}. {row.Topic}**")
-
-    if "youtube.com" in row.URL or "youtu.be" in row.URL:
+    st.markdown(f"#### {i}. {row.Topic}")
+    if is_image(row.URL):
+        st.image(row.URL, caption=row.Topic, use_column_width=True)
+    elif "youtube.com" in row.URL or "youtu.be" in row.URL:
         # Embed YouTube video
         st.video(row.URL)
     else:
-        # Generate Gemini summary
         prompt = f"Extended summary of {row.URL}. What are the key names and things to remember for a quiz?"
         gem_response = model.generate_content(prompt)
         st.markdown(gem_response.text)
