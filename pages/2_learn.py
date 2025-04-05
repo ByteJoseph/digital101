@@ -109,6 +109,7 @@ for i, row in enumerate(df.itertuples(), start=1):
         st.markdown(gem_response.text)
     load_bar.progress((i//num_rows)*100)
 st.markdown("---")
+st.markdown("Made with 💛 by [**Joseph**](https://github.com/ByteJoseph)")
 # I will implement this later :)
 # st.subheader("🧠 Quick Quiz")
 
@@ -122,4 +123,4 @@ st.markdown("---")
 #     else:
 #         st.error("Oops! Try again.")
 # st.markdown("---")
-st.markdown("Made with 💛 by **Joseph**")
+

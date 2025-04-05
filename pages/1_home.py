@@ -17,3 +17,5 @@ st.markdown("[**View my dataset**](https://github.com/ByteJoseph/digital101/tree
 if st.button("Revise Topics",icon=":material/menu_book:",):
     st.switch_page("./pages/2_learn.py")
     pass
+st.markdown("---")
+st.markdown("Made with 💛 by [**Joseph**](https://github.com/ByteJoseph)")
