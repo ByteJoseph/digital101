@@ -106,9 +106,18 @@ for i, row in enumerate(df.itertuples(), start=1):
         # Embed YouTube video
         st.video(row.URL)
     else:
-        prompt = f"Create a detailed summary of {row.URL} without loosing any information. don't specifically include the name of blog, be data heavy and explain it roughly. and include a table whenever possible and say why it is"
+        prompt = f"Create a detailed summary of {row.URL} without loosing any information. don't specifically include the name of blog, be data heavy and explain it roughly. and include a table whenever possible (not exceeding 2-3 columns / use additional tables if yu want to express more) and say why it is. reduce errors"
         gem_response = model.generate_content(prompt)
-        st.markdown(gem_response.text)
+        safe_html = f"""
+<div style="overflow-x: auto; white-space: normal; word-wrap: break-word; font-size:12px;">
+<pre style="white-space: pre-wrap;">{gem_response.text}</pre>
+</div>
+"""
+
+
+        st.markdown(safe_html, unsafe_allow_html=True)
+        print(gem_response.text)
+
     load_bar.progress((i//num_rows)*100)
 st.markdown("---")
 st.markdown("<p style='text-align: center;'>Made with 💛 by <a href='https://github.com/ByteJoseph'><b>Joseph</b></a></p>", unsafe_allow_html=True)
