@@ -22,9 +22,9 @@ topics = [
     "ChatGPT",
     "GPT-4",
     "ChatGPT in Marketing",
-    "OpenAI Tools: AI Text Classifier",
-    "OpenAI Tools: Point-E",
-    "OpenAI Tools: Text-to-Image Generator DALL-E",
+    "OpenAI Tools AI Text Classifier",
+    "OpenAI Tools Point-E",
+    "OpenAI Tools Text-to-Image Generator DALL-E",
     "Applications of Artificial Intelligence",
     "Intelligent Wearables and Bionics",
     "AI in Electric Vehicles (EVs)",
@@ -33,15 +33,14 @@ topics = [
     "Future of Artificial Intelligence in Various Industries",
     "Edge AI OR TinyML",
     "Quantum Computing",
-    "AI Ethics",
-    "Ethical Considerations of Generative AI",
     "Evolution of Big Data Analytics",
     "An Overview of Big Data Analytics",
     "Applications of Big Data Analytics",
     "Database Management for Data Science",
     "Getting Started with Internet of Things",
     "Applications of IoT",
-    "Industrial Internet of Things (IIoT)",
+    "Industrial Internet of Things or IIoT",
+    "Digital Payments",
     "An Overview of Cloud Computing",
     "Applications of Cloud Computing",
     "Service Models in Cloud Computing",
@@ -57,7 +56,7 @@ topics = [
     "Impact of Blockchain on Workforce & Workplace",
     "Getting Started with Robotic Process Automation",
     "3 Core Technologies of Robotic Process Automation",
-    "Applications of RPA in Banking & Insurance Industry",
+    "Applications of Robotic Process Automation in Banking & Insurance Industry",
     "Getting Started with Web, Mobile Development and Marketing",
     "5Ds of Digital Marketing",
     "Digital Storytelling",
@@ -67,9 +66,12 @@ topics = [
     "Getting Started with Augmented Reality and Virtual Reality",
     "Pre-requisites for Augmented Reality & Virtual Reality",
     "Metaverse",
-    "Applications of AR & VR in Banking & Insurance",
-    "VR Best Practices and Challenges"
+    "Applications of Augmented Reality & Virtual Reality in Banking & Insurance",
+    "VR Best Practices and Challenges",
+    "AI Ethics",
+    "Ethical Considerations of Generative AI"
 ]
+
 selected_topic = st.selectbox(":rainbow[Choose a topic to begin:]", topics)
 
 filename = selected_topic.replace("✅", "").strip().replace(" ", " ").rstrip() + ".csv"
@@ -104,7 +106,7 @@ for i, row in enumerate(df.itertuples(), start=1):
         # Embed YouTube video
         st.video(row.URL)
     else:
-        prompt = f"Extended summary of {row.URL}. What are the key names and things to remember for a assesment?"
+        prompt = f"Create a detailed summary of {row.URL} without loosing any information. don't specifically include the name of blog, be data heavy. and include a table whenever possible"
         gem_response = model.generate_content(prompt)
         st.markdown(gem_response.text)
     load_bar.progress((i//num_rows)*100)
