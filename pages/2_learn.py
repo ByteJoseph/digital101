@@ -106,7 +106,7 @@ for i, row in enumerate(df.itertuples(), start=1):
         # Embed YouTube video
         st.video(row.URL)
     else:
-        prompt = f"Create a detailed summary of {row.URL} without loosing any information. don't specifically include the name of blog, be data heavy. and include a table whenever possible"
+        prompt = f"Create a detailed summary of {row.URL} without loosing any information. don't specifically include the name of blog, be data heavy and explain it roughly. and include a table whenever possible and say why it is"
         gem_response = model.generate_content(prompt)
         st.markdown(gem_response.text)
     load_bar.progress((i//num_rows)*100)
