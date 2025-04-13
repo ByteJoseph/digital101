@@ -7,9 +7,7 @@ from streamlit_js_eval import streamlit_js_eval
 
 genai.configure(api_key=st.secrets["api"]["gemini_key"])
 model = genai.GenerativeModel('gemini-2.0-flash')
-st.markdown("""
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-""", unsafe_allow_html=True)
+st.markdown("""<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">""", unsafe_allow_html=True)
 
 st.title("Digital 101")
 st.markdown("Welcome to my revision hub!")
@@ -73,6 +71,11 @@ topics = [
     "Ethical Considerations of Generative AI"
 ]
 
+def set_topic_index(new_index, key):
+    streamlit_js_eval(js_expressions=f"localStorage.setItem('current_st_index', '{new_index}');", key=key)
+    st.session_state.current_st_index = new_index
+    st.rerun()
+
 if "current_st_index" not in st.session_state:
     stored_index = streamlit_js_eval(
         js_expressions="localStorage.getItem('current_st_index');",
@@ -85,27 +88,17 @@ if "current_st_index" not in st.session_state:
         st.session_state.current_st_index = 0
 
 index = st.session_state.current_st_index
-
 selected_topic = st.selectbox("🎯 Choose a topic to begin:", topics, index=index)
-load_bar.progress((index + 1) / len(topics))
-if topics.index(selected_topic) != len(topics)-1:
-  if st.button("Next Topic",icon="▶",use_container_width=True) and index < len(topics) - 1:
-        new_index = topics.index(selected_topic) + 1
-        streamlit_js_eval(
-            js_expressions=f"localStorage.setItem('current_st_index', '{new_index}');",
-            key="set-next-index"
-        )
-        st.session_state.current_st_index = new_index
-        st.rerun()
-if index > 0:
- if st.button("Prev Topic",icon="◀",use_container_width=True) and index > 0:
-        new_index = topics.index(selected_topic) - 1
-        streamlit_js_eval(
-            js_expressions=f"localStorage.setItem('current_st_index', '{new_index}');",
-            key="set-prev-index"
-        )
-        st.session_state.current_st_index = new_index
-        st.rerun()
+topic_index = topics.index(selected_topic)
+load_bar.progress((topic_index + 1) / len(topics))
+
+if topic_index < len(topics) - 1:
+    if st.button("Next Topic", icon="▶", use_container_width=True):
+        set_topic_index(topic_index + 1, "set-next-index")
+
+if topic_index > 0:
+    if st.button("Prev Topic", icon="◀", use_container_width=True):
+        set_topic_index(topic_index - 1, "set-prev-index")
 
 filename = selected_topic.replace("✅", "").strip() + ".csv"
 path = Path("dataset") / filename
@@ -114,11 +107,18 @@ if not path.exists():
     st.warning("⚠️ Content for this topic is missing. Showing fallback content.")
     path = Path("dataset") / "none.csv"
 else:
-    msg = st.toast('Generating Response...',icon="🌐")
+    msg = st.toast('Generating Response...', icon="🌐")
+
+@st.cache_data
+def load_csv(file_path):
+    return pd.read_csv(file_path)
+
+@st.cache_data(show_spinner=False)
+def get_gemini_summary(prompt):
+    return model.generate_content(prompt).text
 
 try:
-    df = pd.read_csv(path)
-    num_rows = df.shape[0]
+    df = load_csv(path)
     st.markdown(f"### 📝 Lesson: {selected_topic}")
     st.dataframe(df, use_container_width=True)
 except Exception as e:
@@ -136,48 +136,34 @@ def is_image(url):
         return False
 
 for i, row in enumerate(df.itertuples(), start=1):
-    load_bar.progress((topics.index(selected_topic) + 1) / len(topics))
+    load_bar.progress((topic_index + 1) / len(topics))
     if not isinstance(row.URL, str) or not row.URL.strip():
         st.info(f"⚠️ No content available for topic {row.Topic}.")
         continue
 
     st.markdown(f"#### {i}. {row.Topic}")
-    
+
     if is_image(row.URL):
         st.image(row.URL, caption=row.Topic, use_container_width=True)
     elif "youtube.com" in row.URL or "youtu.be" in row.URL:
         st.video(row.URL)
         prompt = f"Summarize the topic {row.Topic} from the video."
-        gem_response = model.generate_content(prompt)
-        st.markdown(f"**AI Summary:** {gem_response.text}", unsafe_allow_html=True)
+        summary = get_gemini_summary(prompt)
+        st.markdown(f"**AI Summary:** {summary}", unsafe_allow_html=True)
     else:
-        prompt = f"Summarize the content from this URL in detail without losing key information. Do not mention the blog source or include any tables.\n\nURL: {row.URL}"
-        gem_response = model.generate_content(prompt)
-        st.markdown(f"**AI Summary:** {gem_response.text}", unsafe_allow_html=True)
+        prompt = f"Summarize the content from this URL in detail without losing key information. Do not mention the blog source or include any tables.\n\nURL: {row.URL} include points to revise faster"
+        summary = get_gemini_summary(prompt)
+        st.markdown(f"**AI Summary:** {summary}", unsafe_allow_html=True)
 
-    
 msg.toast("Success")
-if topics.index(selected_topic) != len(topics)-1:
-  if st.button("Continue",use_container_width=True,type="primary") and index < len(topics) - 1:
-        new_index = topics.index(selected_topic) + 1
-        streamlit_js_eval(
-            js_expressions=f"localStorage.setItem('current_st_index', '{new_index}');",
-            key="set-next-index"
-        )
-        st.session_state.current_st_index = new_index
-        st.rerun()
+
+if topic_index != len(topics) - 1:
+    if st.button("Continue", use_container_width=True, type="primary"):
+        set_topic_index(topic_index + 1, "set-next-index")
 else:
     if st.button("Go to the Beginning", use_container_width=True, type="primary"):
-    
         st.session_state.clear()
+        set_topic_index(0, "set-start-index")
 
-        streamlit_js_eval(
-            js_expressions="localStorage.setItem('current_st_index', '0');",
-            key="set-start-index"
-        )
-
-        st.session_state.current_st_index = 0
-
-        st.rerun()
 st.markdown("---")
 st.markdown("<p style='text-align: center;'>Made with 💛 by <a href='https://github.com/ByteJoseph'><b>Joseph</b></a></p>", unsafe_allow_html=True)
