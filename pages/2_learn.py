@@ -155,7 +155,7 @@ for i, row in enumerate(df.itertuples(), start=1):
         summary = get_gemini_summary(prompt)
         st.markdown(f"**AI Summary:** {summary}", unsafe_allow_html=True)
 
-msg.toast("Success")
+msg.toast("Success",icon="✔")
 
 if topic_index != len(topics) - 1:
     if st.button("Continue", use_container_width=True, type="primary"):
