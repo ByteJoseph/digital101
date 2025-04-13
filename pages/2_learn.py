@@ -88,8 +88,9 @@ index = st.session_state.current_st_index
 
 selected_topic = st.selectbox("🎯 Choose a topic to begin:", topics, index=index)
 load_bar.progress((index + 1) / len(topics))
-if st.button("Next Topic",icon="▶",use_container_width=True) and index < len(topics) - 1:
-        new_index = index + 1
+if topics.index(selected_topic) != len(topics)-1:
+  if st.button("Next Topic",icon="▶",use_container_width=True) and index < len(topics) - 1:
+        new_index = topics.index(selected_topic) + 1
         streamlit_js_eval(
             js_expressions=f"localStorage.setItem('current_st_index', '{new_index}');",
             key="set-next-index"
@@ -98,7 +99,7 @@ if st.button("Next Topic",icon="▶",use_container_width=True) and index < len(t
         st.rerun()
 if index > 0:
  if st.button("Prev Topic",icon="◀",use_container_width=True) and index > 0:
-        new_index = index - 1
+        new_index = topics.index(selected_topic) - 1
         streamlit_js_eval(
             js_expressions=f"localStorage.setItem('current_st_index', '{new_index}');",
             key="set-prev-index"
@@ -135,7 +136,7 @@ def is_image(url):
         return False
 
 for i, row in enumerate(df.itertuples(), start=1):
-    load_bar.progress((index + 1) / len(topics))
+    load_bar.progress((topics.index(selected_topic) + 1) / len(topics))
     if not isinstance(row.URL, str) or not row.URL.strip():
         st.info(f"⚠️ No content available for topic {row.Topic}.")
         continue
@@ -157,7 +158,7 @@ for i, row in enumerate(df.itertuples(), start=1):
     
 msg.toast("Success")
 if st.button("Continue",use_container_width=True,type="primary") and index < len(topics) - 1:
-        new_index = index + 1
+        new_index = topics.index(selected_topic) + 1
         streamlit_js_eval(
             js_expressions=f"localStorage.setItem('current_st_index', '{new_index}');",
             key="set-next-index"
