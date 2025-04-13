@@ -135,6 +135,7 @@ def is_image(url):
         return False
 
 for i, row in enumerate(df.itertuples(), start=1):
+    load_bar.progress((index + 1) / len(topics))
     if not isinstance(row.URL, str) or not row.URL.strip():
         st.info(f"⚠️ No content available for topic {row.Topic}.")
         continue
