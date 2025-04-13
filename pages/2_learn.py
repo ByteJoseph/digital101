@@ -157,13 +157,27 @@ for i, row in enumerate(df.itertuples(), start=1):
 
     
 msg.toast("Success")
-if st.button("Continue",use_container_width=True,type="primary") and index < len(topics) - 1:
+if topics.index(selected_topic) != len(topics)-1:
+  if st.button("Continue",use_container_width=True,type="primary") and index < len(topics) - 1:
         new_index = topics.index(selected_topic) + 1
         streamlit_js_eval(
             js_expressions=f"localStorage.setItem('current_st_index', '{new_index}');",
             key="set-next-index"
         )
         st.session_state.current_st_index = new_index
+        st.rerun()
+else:
+    if st.button("Go to the Beginning", use_container_width=True, type="primary"):
+    
+        st.session_state.clear()
+
+        streamlit_js_eval(
+            js_expressions="localStorage.setItem('current_st_index', '0');",
+            key="set-start-index"
+        )
+
+        st.session_state.current_st_index = 0
+
         st.rerun()
 st.markdown("---")
 st.markdown("<p style='text-align: center;'>Made with 💛 by <a href='https://github.com/ByteJoseph'><b>Joseph</b></a></p>", unsafe_allow_html=True)
