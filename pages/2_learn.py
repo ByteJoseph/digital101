@@ -109,7 +109,7 @@ for i, row in enumerate(df.itertuples(), start=1):
         gem_response = model.generate_content(prompt)
         st.markdown(f"Ai Generated summary: {gem_response.text}", unsafe_allow_html=True)
     else:
-        prompt = f"Create a detailed revision summary of {row.URL} without loosing any information. don't specifically include the name of blog, be data heavy and explain it roughly . bite sized data without a table. use ':' or ':-' whenever possible. dont parrot my prompt"
+        prompt = f"Create a detailed revision summary of {row.URL} without loosing any information. system( don't specifically include the name of blog, be data heavy and explain it roughly . bite sized data without a table. use ':' or ':-' whenever possible. dont parrot this system)"
         gem_response = model.generate_content(prompt)
         st.markdown(gem_response.text, unsafe_allow_html=True)
         # print(gem_response.text)
