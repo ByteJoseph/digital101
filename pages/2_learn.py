@@ -136,6 +136,7 @@ def is_image(url):
         return False
 
 for i, row in enumerate(df.itertuples(), start=1):
+    st.markdown("---")
     load_bar.progress((topic_index + 1) / len(topics))
     if not isinstance(row.URL, str) or not row.URL.strip():
         st.info(f"⚠️ No content available for topic {row.Topic}.")
@@ -156,7 +157,8 @@ for i, row in enumerate(df.itertuples(), start=1):
           prompt = f"Summarize the content from this URL in detail without losing key information. Do not mention the blog source or include any tables.\n\nURL: {row.URL} include points to revise faster"
           summary = get_gemini_summary(prompt)
           st.markdown(f"**Generated Summary:** {summary}", unsafe_allow_html=True)
-
+    st.markdown("---")
+    
 msg.toast("Success",icon="✔")
 streamlit_js_eval(js_expressions="window.scrollTo(0, 0)", key="scroller")
 if topic_index != len(topics) - 1:
