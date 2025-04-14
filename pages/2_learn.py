@@ -107,7 +107,7 @@ if not path.exists():
     st.warning("⚠️ Content for this topic is missing. Showing fallback content.")
     path = Path("dataset") / "none.csv"
 else:
-    msg = st.toast('Generating Response...', icon="🌐")
+    msg = st.toast('Generating Summary...', icon="🌐")
 
 @st.cache_data
 def load_csv(file_path):
