@@ -169,7 +169,7 @@ if topic_index != len(topics) - 1:
     # </script>
     #  """
     
-    if st.button("Next Topic",use_container_width=True,type="primary"):
+    if st.button("Next Topic ",use_container_width=True,type="primary",icon="▶"):
         # streamlit_js_eval(js_expressions="window.location.href = 'https://www.example.com';", key="redirect")
         set_topic_index(topic_index + 1, "set-next-index")
 else:
