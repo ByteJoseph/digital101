@@ -5,8 +5,7 @@ st.markdown("""
             """)
 st.write(
     """
-    This is the perfect place to revisit and strengthen your understanding 
-    of everything you’ve learned so far in Digital 101.
+This web app helps you quickly revise the topics you've learned in FutureSkills Prime's Digital 101 course.
     <p>
     You can view my dataset <a href="https://github.com/ByteJoseph/digital101/tree/master/dataset"><b>here</b></a>.
     </p>
@@ -17,7 +16,7 @@ st.write(
 )
 
 st.balloons()
-if st.button("Revise Topics",icon=":material/menu_book:",type="primary"):
+if st.button("Start Revision",icon=":material/menu_book:",type="primary"):
     st.switch_page("./pages/2_learn.py")
     pass
 st.markdown("---")

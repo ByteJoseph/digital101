@@ -1,10 +1,10 @@
 import streamlit as st
 import pandas as pd
-import requests
+import requests,time
 import google.generativeai as genai
 from pathlib import Path
 from streamlit_js_eval import streamlit_js_eval
-
+# from streamlit_scroll_to_top import scroll_to_here
 genai.configure(api_key=st.secrets["api"]["gemini_key"])
 model = genai.GenerativeModel('gemini-2.0-flash')
 st.markdown("""<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">""", unsafe_allow_html=True)
@@ -93,7 +93,7 @@ topic_index = topics.index(selected_topic)
 load_bar.progress((topic_index + 1) / len(topics))
 
 if topic_index < len(topics) - 1:
-    if st.button("Next Topic", icon="▶", use_container_width=True):
+    if st.button("Next Topic", icon="▶", use_container_width=True,type="primary"):
         set_topic_index(topic_index + 1, "set-next-index")
 
 if topic_index > 0:
@@ -147,23 +147,34 @@ for i, row in enumerate(df.itertuples(), start=1):
         st.image(row.URL, caption=row.Topic, use_container_width=True)
     elif "youtube.com" in row.URL or "youtu.be" in row.URL:
         st.video(row.URL)
-        prompt = f"Summarize the topic {row.Topic} from the video."
-        summary = get_gemini_summary(prompt)
-        st.markdown(f"**AI Summary:** {summary}", unsafe_allow_html=True)
+        with st.spinner("Wait, Generating.."):
+          prompt = f"Summarize the topic {row.Topic} from the video."
+          summary = get_gemini_summary(prompt)
+          st.markdown(f"**Generated Summary:** {summary}", unsafe_allow_html=True)
     else:
-        prompt = f"Summarize the content from this URL in detail without losing key information. Do not mention the blog source or include any tables.\n\nURL: {row.URL} include points to revise faster"
-        summary = get_gemini_summary(prompt)
-        st.markdown(f"**AI Summary:** {summary}", unsafe_allow_html=True)
+        with st.spinner("Wait, Generating.."):
+          prompt = f"Summarize the content from this URL in detail without losing key information. Do not mention the blog source or include any tables.\n\nURL: {row.URL} include points to revise faster"
+          summary = get_gemini_summary(prompt)
+          st.markdown(f"**Generated Summary:** {summary}", unsafe_allow_html=True)
 
 msg.toast("Success",icon="✔")
-
+streamlit_js_eval(js_expressions="window.scrollTo(0, 0)", key="scroller")
 if topic_index != len(topics) - 1:
-    if st.button("Continue", use_container_width=True, type="primary"):
+    placeholder = st.empty()
+    # js_code = """
+    #  <script>
+    # window.scrollTo({ top: 0, behavior: 'smooth' });
+    # </script>
+    #  """
+    
+    if st.button("Next Topic",use_container_width=True,type="primary"):
+        # streamlit_js_eval(js_expressions="window.location.href = 'https://www.example.com';", key="redirect")
         set_topic_index(topic_index + 1, "set-next-index")
 else:
+    
     if st.button("Go to the Beginning", use_container_width=True, type="primary"):
         st.session_state.clear()
         set_topic_index(0, "set-start-index")
 
 st.markdown("---")
-st.markdown("<p style='text-align: center;'>Made with 💛 by <a href='https://github.com/ByteJoseph'><b>Joseph</b></a></p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center;'>Made with 💛</p>", unsafe_allow_html=True)
