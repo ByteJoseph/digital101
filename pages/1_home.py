@@ -3,6 +3,9 @@ st.title("Welcome to")
 st.markdown("""
             ## **Digital 101** **:rainbow[Revision]**
             """)
+if st.button("Start Revision",icon=":material/menu_book:",type="primary"):
+    st.switch_page("./pages/2_learn.py")
+    pass
 st.write(
     """
 This web app helps you quickly revise the topics you've learned in FutureSkills Prime's Digital 101 course.
@@ -16,8 +19,5 @@ This web app helps you quickly revise the topics you've learned in FutureSkills 
 )
 
 st.balloons()
-if st.button("Start Revision",icon=":material/menu_book:",type="primary"):
-    st.switch_page("./pages/2_learn.py")
-    pass
 st.markdown("---")
 #removed st.markdown("<p style='text-align: center;'>Made with 💛 by <a href='https://github.com/ByteJoseph'><b>Joseph</b></a></p>", unsafe_allow_html=True)
