@@ -154,7 +154,7 @@ for i, row in enumerate(df.itertuples(), start=1):
           st.markdown(f"**Generated Summary:** {summary}", unsafe_allow_html=True)
     else:
         with st.spinner("Wait, Generating.."):
-          prompt = f"Summarize the topic from this URL in detail without losing key information.Explain all details. Do not mention the blog source or include any tables.\n\n Topic:{row.Topic} URL: {row.URL}  include all points from url to revise faster,Act like TL;DR, and Did you know? etc"
+          prompt = f"Summarize the topic from this URL in detail without losing key information.Explain all details. Do not mention the blog source and don't include any tables.\n\n Topic:{row.Topic} URL: {row.URL}  include all points from url to revise faster,Act like TL;DR, and Did you know? etc"
           summary = get_gemini_summary(prompt)
           st.markdown(f"**Generative Summary:** {summary}", unsafe_allow_html=True)
     st.markdown("---")
